@@ -7,6 +7,7 @@ from ttkbootstrap.constants import *
 from pyModbusTCP.client import ModbusClient
 
 
+
 # Declaro Variables
 peso = 20.65
 
@@ -14,8 +15,12 @@ peso = 20.65
 # Ahora armo la ventana con ttkbootstrap, una masa
 root = tb.Window(themename="superhero")
 # TCP auto connect on modbus request, dont close after it
-c = ModbusClient(host="127.0.0.1", auto_open=True, auto_close=False)
-valor = tk.DoubleVar(value = 20.65)
+c = ModbusClient(host="192.168.1.10",
+                 auto_open=True,
+                 auto_close=False,
+                 port=502
+                 )
+
 
 #Acá hago los ponmenores de ModBus
 #def conectar_modbus():
@@ -64,7 +69,7 @@ async def leer_regs():
         else:
             print("read error")
 
-        await asyncio.sleep(1) # espera de 1 segundo para simular la actualización
+        await asyncio.sleep(0.5) # espera de 1 segundo para simular la actualización
 
 
 async def main():
