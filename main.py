@@ -9,7 +9,6 @@ from pyModbusTCP.client import ModbusClient
 
 # Declaro Variables
 peso = 20.65
-global C
 
 
 # Ahora armo la ventana con ttkbootstrap, una masa
@@ -22,13 +21,13 @@ valor = tk.DoubleVar(value = 20.65)
 #def conectar_modbus():
 
 
-async def const_window():
+#async def const_window():
 
-    print("Creando interface")
-    root.title("Demo de Gaude lpm")
-    root.geometry("800x600")
+print("Creando interface")
+root.title("Demo de Gaude lpm")
+root.geometry("800x600")
 
-    tk.Label(
+tk.Label(
         root,
         text="trabajando",
         fg="White",
@@ -38,43 +37,47 @@ async def const_window():
             fill=tk.BOTH
                 )
 
-    my_meter = tb.Meter(root,
-                        bootstyle="danger",
-                        subtext="Lectura Actual",
-                        interactive=True,
-                        textright=" Kgs",
-                        metertype="semi",
-                        stripethickness=10,
-                        metersize=400)
+my_meter = tb.Meter(
+    root,
+    bootstyle="danger",
+    subtext="Lectura Actual",
+    interactive=False,
+    textright=" Kgs",
+    metertype="semi",
+    stripethickness=10,
+    meterthickness=80,
+    metersize=400)
 
-    my_meter.pack(pady=50)
+my_meter.pack(pady=50)
 
-    my_meter.configure(amountused=peso)
+my_meter.configure(amountused=peso)
 
 
 async def leer_regs():
         regs = c.read_holding_registers(0, 10)
         if regs:
             print(regs)
+            val = regs[0] / 100
+            global peso
+            peso = val
+            return (val)
         else:
             print("read error")
-        valor = regs[0] / 100
 
         await asyncio.sleep(1) # espera de 1 segundo para simular la actualización
 
 
-
 async def main():
 
-    await const_window()
+    #await const_window()
     #conectar_modbus()
     while (True):
         print("hola")
         # se ejecutan las tareas en segundo plano utilizando asyncio
         await leer_regs()
         print("por aca pasa")
-        #my_meter.configure(amountused=result)
-        # se actualiza la GUI
+        my_meter.configure(amountused=peso)
+        my_meter.update()
         root.update()
 
 asyncio.run(main())
